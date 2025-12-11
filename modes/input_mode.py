@@ -66,6 +66,33 @@ class InputMode(Mode):
             anchored_position=(DISPLAY_WIDTH - 10, DISPLAY_HEIGHT // 2)
         )
         self.display_group.append(labels['next'])
+
+        # --- フッター ---
+        # 左アクション
+        labels['left_action'] = label.Label(
+            terminalio.FONT,
+            text="",  # 空文字で初期化
+            color=0xAAAAAA,
+            anchor_point=(0.0, 1.0),  # 左下
+            anchored_position=(2, DISPLAY_HEIGHT - 2)
+        )
+        self.display_group.append(labels['left_action'])
+
+        # 右アクション
+        labels['right_action'] = label.Label(
+            terminalio.FONT,
+            text="",  # 空文字で初期化
+            color=0xAAAAAA,
+            anchor_point=(1.0, 1.0),  # 右下
+            anchored_position=(DISPLAY_WIDTH - 2, DISPLAY_HEIGHT - 2)
+        )
+        self.display_group.append(labels['right_action'])
         
         return labels
 
+    def update_footer_text(self, left_text, right_text):
+        """フッターのテキストを更新する"""
+        if 'left_action' in self.display_labels:
+            self.display_labels['left_action'].text = left_text
+        if 'right_action' in self.display_labels:
+            self.display_labels['right_action'].text = right_text

@@ -25,13 +25,11 @@ class BasicMode(InputMode):
     
     def __init__(self, keyboard, display=None, display_group=None):
         super().__init__("Basic", keyboard, self.CHAR_LIST, display, display_group)
-    
-    def init_state(self):
-        """基本モードの状態を初期化"""
-        return {
-            'char_index': 0  # 現在選択中の文字のインデックス
-        }
-    
+    def on_enter(self, reset=True):
+        """モードに入ったときの処理"""
+        super().on_enter(reset=reset)
+        self.update_footer_text("< Prev", "Next >")
+
 
     def update_display_state(self):
         """状態に基づいてディスプレイを更新"""

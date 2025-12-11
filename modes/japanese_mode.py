@@ -43,7 +43,7 @@ class JapaneseMode(InputMode):
         """モードに入ったときの処理"""
         super().on_enter(reset=reset)
         # Utilityモード等から戻った時も、常にニュートラル状態で開始する
-        self.set_state('is_neutral', True)
+        self._set_active_state(is_neutral=True)
     
     def init_state(self):
         """状態を初期化"""
@@ -59,6 +59,24 @@ class JapaneseMode(InputMode):
         }
     
 
+
+    def _set_active_state(self, is_neutral, active_side=None):
+        """アクティブ状態を設定し、フッター表示を更新する"""
+        self.set_state('is_neutral', is_neutral)
+        
+        if active_side:
+            self.set_state('active_side', active_side)
+        
+        if is_neutral:
+            # ニュートラル状態のフッター
+            self.update_footer_text("< Vowel", "Consonant >")
+        else:
+            # アクティブ状態のフッター
+            current_side = self.get_state('active_side')
+            if current_side == 'vowel':
+                self.update_footer_text("< Next", "Input >")
+            else: # consonant
+                self.update_footer_text("< Input", "Next >")
 
     def update_display_state(self):
         """状態に基づいてディスプレイを更新"""
@@ -159,8 +177,7 @@ class JapaneseMode(InputMode):
                 self.set_state('vowel_index', v_index)
         
         # 4. 新しい状態を保存
-        self.set_state('active_side', target_side)
-        self.set_state('is_neutral', False)
+        self._set_active_state(is_neutral=False, active_side=target_side)
         
         return None
 
@@ -181,7 +198,7 @@ class JapaneseMode(InputMode):
             self.send_key(target_char)
         
         # ニュートラル状態へ移行（サイドは維持）
-        self.set_state('is_neutral', True)
+        self._set_active_state(is_neutral=True)
         return None
     
     def handle_double_click(self):
@@ -192,8 +209,7 @@ class JapaneseMode(InputMode):
         # 完全リセット
         self.set_state('consonant_index', 0)
         self.set_state('vowel_index', 0)
-        self.set_state('active_side', 'vowel')
-        self.set_state('is_neutral', True)
+        self._set_active_state(is_neutral=True, active_side='vowel')
         
         return None
     
