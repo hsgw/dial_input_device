@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Your Name
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
 # SPDX-License-Identifier: MIT
 
 """
@@ -157,15 +157,6 @@ class Mode:
             str or None: 次のモード名（Noneの場合は変更なし）
         """
         return None
-
-    def handle_long_press(self):
-        """
-        長押し時の処理
-        
-        Returns:
-            str or None: 次のモード名（Noneの場合は変更なし）
-        """
-        return None
     
     def send_key(self, char, use_shift=False):
         """キーを送信するヘルパーメソッド"""
@@ -271,24 +262,6 @@ class ModeManager:
                 if next_mode == "__PREVIOUS__":
                     next_mode = self.previous_mode_name
                     
-                if next_mode:
-                    should_reset = True
-                    if next_mode == self.previous_mode_name:
-                        should_reset = False
-                    self.set_mode(next_mode, reset=should_reset)
-
-    def handle_long_press(self):
-        """現在のモードで長押しを処理"""
-        if self.current_mode:
-            next_mode = self.current_mode.handle_long_press()
-
-            # ディスプレイを更新 (状態が変わった可能性があるため)
-            self.current_mode.update_display_state()
-
-            if next_mode:
-                if next_mode == "__PREVIOUS__":
-                    next_mode = self.previous_mode_name
-
                 if next_mode:
                     should_reset = True
                     if next_mode == self.previous_mode_name:

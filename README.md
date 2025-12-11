@@ -1,13 +1,14 @@
-# XIAO RP2040 金庫ダイヤル風キーボード
+# DIAL key-input device
 
-ロータリーエンコーダとスイッチを使った、金庫のダイヤルをモチーフにしたユニークなキーボード入力デバイスです。
+ロータリーエンコーダとスイッチを使った、ダイヤル錠をモチーフにしたユニークなキーボード入力デバイスです。
 
 ## 特徴
 
-- **金庫ダイヤル風入力**: 回転方向を変えることで文字を確定
-- **ダブルクリック対応**: Shift+文字の入力が可能
-- **モード切り替え**: 複数の入力モードに対応可能な拡張性
-- **US/JIS対応**: USキーボードと日本語キーボードの両方に対応
+ロータリーエンコーダを左右に回して文字を入力するデバイスです。  
+USBキーボードとして動作します。
+
+通常のアルファベット・数字・記号を入力するモードと日本語入力に特化したモードの2つを切り替えて使用できます。  
+US/JISのキーコードに対応しています。
 
 ## ハードウェア要件
 
@@ -19,16 +20,19 @@
 ## 配線
 
 ### ロータリーエンコーダ
+
 - CLK (A) → XIAO D9
 - DT (B) → XIAO D10
 - GND → XIAO GND
-- + → XIAO 3V3
+- - → XIAO 3V3
 
 ### スイッチ
+
 - 片方の足 → XIAO D7
 - もう片方の足 → XIAO GND
 
 ### I2C OLEDディスプレイ
+
 - SCL → XIAO SCL (D5)
 - SDA → XIAO SDA (D4)
 - VCC → XIAO 3V3
@@ -37,6 +41,7 @@
 ## 必要なライブラリ
 
 CircuitPythonの`lib`フォルダに以下をコピー:
+
 - `adafruit_displayio_ssd1306.mpy`
 - `adafruit_display_text` (フォルダ)
 - `adafruit_bus_device` (フォルダ)
@@ -59,12 +64,32 @@ rotary_keyinput_device_rp2040/
 
 ## 使い方
 
-### 基本操作
+本デバイスには、アルファベットや記号を入力する「基本モード」と、日本語入力に特化した「日本語モード」の2つの主要なモードがあります。
 
-1. **ロータリーエンコーダを回す**: 文字を選択
-2. **回転方向を変える**: 選択中の文字を入力
-3. **シングルクリック**: 選択中の文字を入力
-4. **ダブルクリック**: Shift+文字を入力（大文字・記号）
+### 基本モード (Basic Mode)
+
+金庫のダイヤルのような操作で文字を入力するモードです。アルファベット、数字、記号の入力に適しています。
+
+1.  **文字の選択**:
+    - ロータリーエンコーダを回して、ディスプレイに表示される文字を選択します。
+2.  **文字の入力**:
+    - **回転方向の反転**: 金庫のダイヤルのように、回転方向を逆にする（例: 右回転→左回転）と、選択中の文字が入力されます。
+    - **シングルクリック**: スイッチを1回クリックすると、選択中の文字が入力されます。
+    - **ダブルクリック**: `Shift + 選択中の文字`（大文字や記号など）が入力されます。
+
+> **Note:** クリックで入力した後、意図しない入力を防ぐために一時的な待機状態（ニュートラルモード）になります。左右どちらも選択モードになります。
+
+### 日本語モード (Japanese Mode)
+
+ダイヤル操作を元に子音・母音を分割して左右に回しながらローマ字で日本語を入力します。  
+左に回すと子音の選択、右に回すと母音の選択になります。
+
+### BS/スペースモード
+
+スイッチを長押しするとBS/スペースを入力するモードになります。
+左右に回してBS/スペースを入力します。逆方向に回すと元のモードに戻ります。
+
+> **Note:** スペース入力後に逆方向に回すとエンターが入力されたあとに元のモードへ戻ります。
 
 ### 設定変更
 
@@ -79,39 +104,9 @@ ENCODER_PIN_A = board.D9
 ENCODER_PIN_B = board.D10
 SWITCH_PIN = board.D7
 
-# 文字リスト
-CHAR_LIST = [...]  # カスタマイズ可能
-```
-
-## 新しいモードの追加方法
-
-`mode_manager.py`に新しいモードクラスを追加:
-
-```python
-class DeleteMode(Mode):
-    """削除モード"""
-    
-    def __init__(self, keyboard, char_list, char_to_keycode, needs_shift):
-        super().__init__("Delete", keyboard, char_list, char_to_keycode, needs_shift)
-    
-    def handle_single_click(self, current_char_index):
-        # Backspaceを送信
-        self.keyboard.send(Keycode.BACKSPACE)
-        print("Sent: Backspace")
-        return None
-```
-
-`code.py`でモードを登録:
-
-```python
-delete_mode = DeleteMode(keyboard, CHAR_LIST, CHAR_TO_KEYCODE, NEEDS_SHIFT)
-mode_manager.add_mode(delete_mode)
 ```
 
 ## ライセンス
 
 MIT License
-
-## 作者
-
-Your Name
+(c) 2025 Takuya Urakawa (@hsgw 5z6p.com)

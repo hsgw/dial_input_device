@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Your Name
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
 # SPDX-License-Identifier: MIT
 
 """

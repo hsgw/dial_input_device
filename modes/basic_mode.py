@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Your Name
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
 # SPDX-License-Identifier: MIT
 
 """
@@ -20,7 +20,7 @@ class BasicMode(InputMode):
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         ' ', '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
-        ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
+        ':', ';', '<', '=', '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~', '\n'
     ]
     
     def __init__(self, keyboard, display=None, display_group=None):

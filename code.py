@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Your Name
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
 # SPDX-License-Identifier: MIT
 
 """
@@ -6,16 +6,17 @@ XIAO RP2040 金庫ダイヤル風キーボード
 
 必要なハードウェア:
 - Seeed Studio XIAO RP2040
-- ロータリーエンコーダ (KY-040など)
-- タクトスイッチ
+- ロータリーエンコーダ (EC12など)
+- タクトスイッチ（ロータリーエンコーダにスイッチがない場合）
 - I2C OLEDディスプレイ (SH1106, 128x64)
 
 接続:
 - ロータリーエンコーダ:
-  - CLK (A) -> XIAO D9
-  - DT (B)  -> XIAO D10
+  - A       -> XIAO D9
+  - B       -> XIAO D10
   - GND     -> XIAO GND
   - +       -> XIAO 3V3
+  A-GND間とB-GND間に0.01uF程度のコンデンサをいれる
 - スイッチ:
   - 片方の足 -> XIAO D7
   - もう片方の足 -> XIAO GND
@@ -28,8 +29,6 @@ XIAO RP2040 金庫ダイヤル風キーボード
 必要なライブラリ (libフォルダにコピー):
 - adafruit_displayio_ssd1306.mpy
 - adafruit_display_text (フォルダ)
-- adafruit_bus_device (フォルダ)
-- adafruit_hid (フォルダ)
 """
 
 import time

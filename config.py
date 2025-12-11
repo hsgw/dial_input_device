@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Your Name
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
 # SPDX-License-Identifier: MIT
 
 """
@@ -20,5 +20,3 @@ KEYBOARD_LAYOUT = 'JIS'  # 'US' または 'JIS' を選択
 DISPLAY_WIDTH = 128
 DISPLAY_HEIGHT = 64
 I2C_ADDRESS = 0x3C  # 使用するOLEDのアドレスに合わせて変更してください
-
-

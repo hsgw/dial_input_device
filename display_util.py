@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
+# SPDX-License-Identifier: MIT
+
 def get_display_char(char):
     """表示用の文字を取得（スペース等を可視化）"""
     if char == ' ':

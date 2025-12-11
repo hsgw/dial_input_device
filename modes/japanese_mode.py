@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Your Name
+# SPDX-FileCopyrightText: 2025 Takuya Urakawa (@hsgw 5z6p.com)
 # SPDX-License-Identifier: MIT
 
 """
@@ -182,46 +182,32 @@ class JapaneseMode(InputMode):
         self._set_active_state(is_neutral=False, active_side=target_side)
         
         return None
+    
+    def _handle_click(self, num_clicks =1):
+        """クリック処理：現在の選択を入力してリセット"""
+        active_side = self.get_state('active_side')
+        
+        target_char = ""
+        if active_side == 'consonant':
+            target_char = self.CONSONANTS[self.get_state('consonant_index')]
+            # 子音をクリックで入力した場合、母音のindexをリセットする
+            self.set_state('vowel_index', 0)
+            
+        else:
+            target_char = self.VOWELS[self.get_state('vowel_index')]
+        
+        if target_char:
+            for _ in range(num_clicks):
+                self.send_key(target_char)
+        
+        # ニュートラル状態へ移行（サイドは維持）
+        self._set_active_state(is_neutral=True)
+        return None
 
     def handle_single_click(self):
-        """クリック処理：現在の選択を入力してリセット"""
-        active_side = self.get_state('active_side')
-        
-        target_char = ""
-        if active_side == 'consonant':
-            target_char = self.CONSONANTS[self.get_state('consonant_index')]
-            # 子音をクリックで入力した場合、母音のindexをリセットする
-            self.set_state('vowel_index', 0)
-            
-        else:
-            target_char = self.VOWELS[self.get_state('vowel_index')]
-        
-        if target_char:
-            self.send_key(target_char)
-        
-        # ニュートラル状態へ移行（サイドは維持）
-        self._set_active_state(is_neutral=True)
-        return None
+        return self._handle_click(1)
 
     def handle_double_click(self):
-        """クリック処理：現在の選択を入力してリセット"""
-        active_side = self.get_state('active_side')
-        
-        target_char = ""
-        if active_side == 'consonant':
-            target_char = self.CONSONANTS[self.get_state('consonant_index')]
-            # 子音をクリックで入力した場合、母音のindexをリセットする
-            self.set_state('vowel_index', 0)
-            
-        else:
-            target_char = self.VOWELS[self.get_state('vowel_index')]
-        
-        if target_char:
-            self.send_key(target_char)
-            self.send_key(target_char)
-        
-        # ニュートラル状態へ移行（サイドは維持）
-        self._set_active_state(is_neutral=True)
-        return None
+        return self._handle_click(2)
     
     
