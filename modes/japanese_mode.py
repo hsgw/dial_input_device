@@ -6,16 +6,12 @@
 ローマ字入力用。2つのリスト（子音・母音）を回転方向で切り替えて選択する。
 """
 
-from config import DISPLAY_WIDTH, DISPLAY_HEIGHT, KEYBOARD_LAYOUT
-import terminalio
-from adafruit_display_text import label
 from adafruit_hid.keycode import Keycode
-from mode_manager import Mode
-from keyboard_mapping import get_keycode_mapping
+from modes.input_mode import InputMode
 from display_util import get_display_char
 
 
-class JapaneseMode(Mode):
+class JapaneseMode(InputMode):
     """
     日本語入力モード
     左回転: 母音リスト (A, I, U, E, O)
@@ -34,10 +30,7 @@ class JapaneseMode(Mode):
     # 記号などが必要な場合は keyboard_mapping.py を拡張して使うか、ここで定義する
     
     def __init__(self, keyboard, display=None, display_group=None):
-        super().__init__("Japanese", keyboard, display=display, display_group=display_group)
-        
-        # キーボードマッピングを取得
-        self.char_to_keycode, self.needs_shift = get_keycode_mapping(KEYBOARD_LAYOUT)
+        super().__init__("Japanese", keyboard, None, display, display_group)
         
         # リストの拡張 (インスタンス属性として上書き)
         # 母音側: 数字 (1-0)
@@ -65,47 +58,6 @@ class JapaneseMode(Mode):
             'is_neutral': True      # True: 選択待機中(リセット直後), False: 選択中
         }
     
-    def init_display(self):
-        """ディスプレイレイアウトを初期化 (Basic Mode準拠)"""
-        if not self.display or self.display_group is None:
-            return {}
-        
-        labels = {}
-        
-        # 前の文字/左選択候補（左側）
-        labels['prev'] = label.Label(
-            terminalio.FONT, 
-            text="", 
-            color=0x888888, 
-            scale=2,
-            anchor_point=(0.0, 0.5),
-            anchored_position=(10, DISPLAY_HEIGHT // 2)
-        )
-        self.display_group.append(labels['prev'])
-        
-        # 現在の文字（中央）
-        labels['current'] = label.Label(
-            terminalio.FONT, 
-            text="", 
-            color=0xFFFFFF, 
-            scale=4,
-            anchor_point=(0.5, 0.5),
-            anchored_position=(DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2 - 4)
-        )
-        self.display_group.append(labels['current'])
-        
-        # 次の文字/右選択候補（右側）
-        labels['next'] = label.Label(
-            terminalio.FONT, 
-            text="", 
-            color=0x888888, 
-            scale=2,
-            anchor_point=(1.0, 0.5),
-            anchored_position=(DISPLAY_WIDTH - 10, DISPLAY_HEIGHT // 2)
-        )
-        self.display_group.append(labels['next'])
-        
-        return labels
 
 
     def update_display_state(self):
@@ -187,7 +139,7 @@ class JapaneseMode(Mode):
                 target_char = self.CONSONANTS[c_index]
             else:
                 target_char = self.VOWELS[v_index]
-            self._send_char(target_char)
+            self.send_key(target_char)
             
         # 2. リセット判定（子音から母音への切り替え時）
         # Active中の切り替え、およびNeutral(クリック)後の切り替えの両方で有効
@@ -226,7 +178,7 @@ class JapaneseMode(Mode):
             target_char = self.VOWELS[self.get_state('vowel_index')]
         
         if target_char:
-            self._send_char(target_char)
+            self.send_key(target_char)
         
         # ニュートラル状態へ移行（サイドは維持）
         self.set_state('is_neutral', True)
@@ -245,26 +197,3 @@ class JapaneseMode(Mode):
         
         return None
     
-    def _send_char(self, char_str):
-        """文字を送信（マッピング対応）"""
-        if not char_str:
-            return
-            
-        char_lower = char_str.lower()
-        
-        # マッピングからキーコードを取得
-        keycode = self.char_to_keycode.get(char_lower)
-        
-        if keycode:
-            # Shiftが必要かチェック
-            needs_shift = char_lower in self.needs_shift
-            
-            # Shift付きで送信
-            if needs_shift:
-                self.keyboard.send(Keycode.SHIFT, keycode)
-            else:
-                self.keyboard.send(keycode)
-                
-            print(f"Sent: {char_str} (Keycode: {keycode}, Shift: {needs_shift})")
-        else:
-            print(f"Warning: No mapping for character '{char_str}'")
