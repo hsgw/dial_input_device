@@ -7,5 +7,6 @@
 """
 
 from modes.basic_mode import BasicMode
+from modes.utility_mode import UtilityMode
 
-__all__ = ['BasicMode']
+__all__ = ['BasicMode', 'UtilityMode']

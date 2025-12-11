@@ -14,12 +14,12 @@ from adafruit_hid.keycode import Keycode
 class Mode:
     """モードの基底クラス"""
     
-    def __init__(self, name, keyboard, char_list, char_to_keycode, needs_shift, display=None, display_group=None):
+    def __init__(self, name, keyboard, char_list=None, char_to_keycode=None, needs_shift=None, display=None, display_group=None):
         self.name = name
         self.keyboard = keyboard
-        self.char_list = char_list
-        self.char_to_keycode = char_to_keycode
-        self.needs_shift = needs_shift
+        self.char_list = char_list if char_list else []
+        self.char_to_keycode = char_to_keycode if char_to_keycode else {}
+        self.needs_shift = needs_shift if needs_shift else []
         self.display = display
         self.display_group = display_group
         self.last_rotation_direction = None
@@ -87,19 +87,26 @@ class Mode:
                     self.display_group.remove(label)
         self.display_labels = {}
     
-    def on_enter(self):
-        """モードに入ったときの処理"""
-        print(f"Mode: {self.name}")
+    def on_enter(self, reset=True):
+        """
+        モードに入ったときの処理
+        
+        Args:
+            reset: 状態をリセットするかどうか (Falseなら前の状態を保持)
+        """
+        print(f"Mode: {self.name} (reset={reset})")
         self.last_rotation_direction = None
         
-        # 状態を初期化
-        self.state = self.init_state()
+        # 状態を初期化（リセットフラグがTrueの場合のみ）
+        if reset:
+            self.state = self.init_state()
         
         # ディスプレイを初期化
         if self.display and self.display_group is not None:
             self.display_labels = self.init_display()
         
         self.update_display_mode()
+        self.update_display_state()
     
     def on_exit(self):
         """モードから出るときの処理"""
@@ -129,9 +136,9 @@ class Mode:
             delta: 回転量
             
         Returns:
-            bool: 何か処理を行ったかどうか
+            str or None: 次のモード名（Noneの場合は変更なし）
         """
-        return False
+        return None
     
     def handle_single_click(self):
         """
@@ -169,6 +176,7 @@ class ModeManager:
     def __init__(self, display=None, display_group=None):
         self.modes = {}
         self.current_mode = None
+        self.previous_mode_name = None
         self.display = display
         self.display_group = display_group
     
@@ -176,35 +184,80 @@ class ModeManager:
         """モードを追加"""
         self.modes[mode.name] = mode
     
-    def set_mode(self, mode_name):
-        """モードを切り替え"""
+    def set_mode(self, mode_name, reset=True):
+        """
+        モードを切り替え
+        
+        Args:
+            mode_name: 切り替えるモード名
+            reset: 新しいモードの状態をリセットするかどうか
+        """
         if mode_name in self.modes:
             if self.current_mode:
+                # 同じモードへの切り替えでなければ履歴を保存
+                if self.current_mode.name != mode_name:
+                    self.previous_mode_name = self.current_mode.name
                 self.current_mode.on_exit()
+                
             self.current_mode = self.modes[mode_name]
-            self.current_mode.on_enter()
+            self.current_mode.on_enter(reset=reset)
         else:
             print(f"Warning: Mode '{mode_name}' not found")
+    
+    def get_previous_mode(self):
+        """前のモード名を取得"""
+        return self.previous_mode_name
     
     def handle_rotation(self, delta):
         """現在のモードで回転を処理"""
         if self.current_mode:
-            result = self.current_mode.handle_rotation(delta)
+            next_mode = self.current_mode.handle_rotation(delta)
+            
             # ディスプレイを更新
             self.current_mode.update_display_state()
-            return result
+            
+            if next_mode:
+                # 特別な値 "__PREVIOUS__" の場合、前のモードに戻る
+                if next_mode == "__PREVIOUS__":
+                    next_mode = self.previous_mode_name
+                
+                if next_mode:
+                    # モード切り替え要求があれば切り替え（前のモードに戻る場合はリセットしない）
+                    should_reset = True
+                    if next_mode == self.previous_mode_name:
+                        should_reset = False
+                        
+                    self.set_mode(next_mode, reset=should_reset)
+                    return True
+            return False # モード変更なし（処理は行われた）
         return False
     
     def handle_single_click(self):
         """現在のモードでシングルクリックを処理"""
         if self.current_mode:
             next_mode = self.current_mode.handle_single_click()
+            
             if next_mode:
-                self.set_mode(next_mode)
+                if next_mode == "__PREVIOUS__":
+                    next_mode = self.previous_mode_name
+                    
+                if next_mode:
+                    should_reset = True
+                    if next_mode == self.previous_mode_name:
+                        should_reset = False
+                    self.set_mode(next_mode, reset=should_reset)
     
     def handle_double_click(self):
         """現在のモードでダブルクリックを処理"""
         if self.current_mode:
             next_mode = self.current_mode.handle_double_click()
+            
             if next_mode:
-                self.set_mode(next_mode)
+                if next_mode == "__PREVIOUS__":
+                    next_mode = self.previous_mode_name
+                    
+                if next_mode:
+                    should_reset = True
+                    if next_mode == self.previous_mode_name:
+                        should_reset = False
+                    self.set_mode(next_mode, reset=should_reset)

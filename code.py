@@ -44,19 +44,16 @@ from adafruit_hid.keyboard import Keyboard
 # 自作モジュールのインポート
 from config import (
     ENCODER_PIN_A, ENCODER_PIN_B, SWITCH_PIN,
-    KEYBOARD_LAYOUT, DISPLAY_WIDTH, DISPLAY_HEIGHT, I2C_ADDRESS,
-    CHAR_LIST
+    KEYBOARD_LAYOUT, DISPLAY_WIDTH, DISPLAY_HEIGHT, I2C_ADDRESS
 )
-from keyboard_mapping import get_keycode_mapping
 from switch_handler import SwitchHandler
 from mode_manager import ModeManager
-from modes import BasicMode
+from switch_handler import SwitchHandler
+from mode_manager import ModeManager
+from modes import BasicMode, UtilityMode
 
 
 # --- 初期化 ---
-
-# キーボードマッピングを取得
-CHAR_TO_KEYCODE, NEEDS_SHIFT = get_keycode_mapping(KEYBOARD_LAYOUT)
 
 # I2Cとディスプレイ
 displayio.release_displays()
@@ -95,16 +92,19 @@ encoder.position = 0  # エンコーダ位置を0にリセット
 mode_manager = ModeManager(display, main_group)
 
 # 基本入力モードを追加
-basic_mode = BasicMode(keyboard, CHAR_LIST, CHAR_TO_KEYCODE, NEEDS_SHIFT, display, main_group)
-
+basic_mode = BasicMode(keyboard, display, main_group)
 mode_manager.add_mode(basic_mode)
+
+# ユーティリティモードを追加
+utility_mode = UtilityMode(keyboard, display, main_group)
+mode_manager.add_mode(utility_mode)
 
 # 初期モードを設定（ディスプレイレイアウトと状態も自動初期化）
 mode_manager.set_mode("Basic")
 
 # --- メインループ ---
 while True:
-    current_encoder_pos = -encoder.position
+    current_encoder_pos = encoder.position
 
     # エンコーダの値が変化したかチェック
     if current_encoder_pos != last_encoder_pos:
@@ -125,5 +125,10 @@ while True:
     elif switch_event == 'double':
         # ダブルクリック
         mode_manager.handle_double_click()
+    
+    elif switch_event == 'long_press':
+        # 長押しでユーティリティモードへ
+        print("Long press detected: Switching to Utility Mode")
+        mode_manager.set_mode("Utility", reset=True)
     
     time.sleep(0.01)  # CPU負荷を軽減
