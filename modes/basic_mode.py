@@ -12,6 +12,7 @@ import terminalio
 from adafruit_display_text import label
 from mode_manager import Mode
 from keyboard_mapping import get_keycode_mapping
+from display_util import get_display_char
 
 
 class BasicMode(Mode):
@@ -95,11 +96,11 @@ class BasicMode(Mode):
         char_index = self.get_state('char_index', 0)
         
         # 選択中の文字と前後の文字を取得
-        selected_char = self.char_list[char_index]
+        selected_char = get_display_char(self.char_list[char_index])
         prev_index = (char_index - 1) % len(self.char_list)
         next_index = (char_index + 1) % len(self.char_list)
-        prev_char = self.char_list[prev_index]
-        next_char = self.char_list[next_index]
+        prev_char = get_display_char(self.char_list[prev_index])
+        next_char = get_display_char(self.char_list[next_index])
         
         # ディスプレイを更新
         if 'prev' in self.display_labels:

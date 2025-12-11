@@ -12,6 +12,7 @@ from adafruit_display_text import label
 from adafruit_hid.keycode import Keycode
 from mode_manager import Mode
 from keyboard_mapping import get_keycode_mapping
+from display_util import get_display_char
 
 
 class JapaneseMode(Mode):
@@ -106,13 +107,6 @@ class JapaneseMode(Mode):
         
         return labels
 
-    def _get_display_char(self, char):
-        """表示用の文字を取得（スペース等を可視化）"""
-        if char == ' ':
-            return 'SP'  # terminalio.FONTはASCII基本セットのみのため'SP'で代用
-        elif char == '\n':
-            return 'EN'  # Enter/改行を'EN'で表示
-        return char
 
     def update_display_state(self):
         """状態に基づいてディスプレイを更新"""
@@ -162,11 +156,11 @@ class JapaneseMode(Mode):
             
         # 更新 (表示用文字に変換)
         if 'current' in self.display_labels:
-            self.display_labels['current'].text = self._get_display_char(center_text).upper()
+            self.display_labels['current'].text = get_display_char(center_text).upper()
         if 'prev' in self.display_labels:
-            self.display_labels['prev'].text = self._get_display_char(left_text).upper()
+            self.display_labels['prev'].text = get_display_char(left_text).upper()
         if 'next' in self.display_labels:
-            self.display_labels['next'].text = self._get_display_char(right_text).upper()
+            self.display_labels['next'].text = get_display_char(right_text).upper()
 
 
     def handle_rotation(self, delta):
@@ -225,6 +219,9 @@ class JapaneseMode(Mode):
         target_char = ""
         if active_side == 'consonant':
             target_char = self.CONSONANTS[self.get_state('consonant_index')]
+            # 子音をクリックで入力した場合、母音のindexをリセットする
+            self.set_state('vowel_index', 0)
+            
         else:
             target_char = self.VOWELS[self.get_state('vowel_index')]
         

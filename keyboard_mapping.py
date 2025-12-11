@@ -81,3 +81,4 @@ def get_keycode_mapping(layout='US'):
     else:
         print("Keyboard Layout: US")
         return CHAR_TO_KEYCODE_US, NEEDS_SHIFT_US
+
