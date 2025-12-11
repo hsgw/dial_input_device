@@ -8,5 +8,6 @@
 
 from modes.basic_mode import BasicMode
 from modes.utility_mode import UtilityMode
+from modes.japanese_mode import JapaneseMode
 
-__all__ = ['BasicMode', 'UtilityMode']
+__all__ = ['BasicMode', 'UtilityMode', 'JapaneseMode']

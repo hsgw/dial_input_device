@@ -30,7 +30,8 @@ CHAR_TO_KEYCODE_US = {
     '[': Keycode.LEFT_BRACKET, '\\': Keycode.BACKSLASH, ']': Keycode.RIGHT_BRACKET,
     '^': Keycode.SIX, '_': Keycode.MINUS, '`': Keycode.GRAVE_ACCENT,
     '{': Keycode.LEFT_BRACKET, '|': Keycode.BACKSLASH, '}': Keycode.RIGHT_BRACKET,
-    '~': Keycode.GRAVE_ACCENT
+    '~': Keycode.GRAVE_ACCENT,
+    '\n': Keycode.ENTER  # Enter/改行キー
 }
 
 # JIS（日本語）キーボード用マッピング
@@ -53,7 +54,8 @@ CHAR_TO_KEYCODE_JIS = {
     '[': Keycode.RIGHT_BRACKET, '\\': Keycode.BACKSLASH, ']': Keycode.BACKSLASH,
     '^': Keycode.EQUALS, '_': Keycode.BACKSLASH, '`': Keycode.LEFT_BRACKET,
     '{': Keycode.RIGHT_BRACKET, '|': Keycode.BACKSLASH, '}': Keycode.BACKSLASH,
-    '~': Keycode.EQUALS
+    '~': Keycode.EQUALS,
+    '\n': Keycode.ENTER  # Enter/改行キー
 }
 
 # USキーボード用Shift必要文字
