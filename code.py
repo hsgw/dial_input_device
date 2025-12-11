@@ -50,7 +50,7 @@ from switch_handler import SwitchHandler
 from mode_manager import ModeManager
 from switch_handler import SwitchHandler
 from mode_manager import ModeManager
-from modes import BasicMode, UtilityMode
+from modes import BasicMode, UtilityMode, JapaneseMode
 
 
 # --- 初期化 ---
@@ -99,8 +99,12 @@ mode_manager.add_mode(basic_mode)
 utility_mode = UtilityMode(keyboard, display, main_group)
 mode_manager.add_mode(utility_mode)
 
+# 日本語入力モードを追加
+japanese_mode = JapaneseMode(keyboard, display, main_group)
+mode_manager.add_mode(japanese_mode)
+
 # 初期モードを設定（ディスプレイレイアウトと状態も自動初期化）
-mode_manager.set_mode("Basic")
+mode_manager.set_mode("Japanese")
 
 # --- メインループ ---
 while True:

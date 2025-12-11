@@ -237,6 +237,9 @@ class ModeManager:
         if self.current_mode:
             next_mode = self.current_mode.handle_single_click()
             
+            # ディスプレイを更新 (状態が変わった可能性があるため)
+            self.current_mode.update_display_state()
+            
             if next_mode:
                 if next_mode == "__PREVIOUS__":
                     next_mode = self.previous_mode_name
@@ -251,6 +254,9 @@ class ModeManager:
         """現在のモードでダブルクリックを処理"""
         if self.current_mode:
             next_mode = self.current_mode.handle_double_click()
+            
+            # ディスプレイを更新 (状態が変わった可能性があるため)
+            self.current_mode.update_display_state()
             
             if next_mode:
                 if next_mode == "__PREVIOUS__":
