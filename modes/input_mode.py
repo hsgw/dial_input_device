@@ -96,3 +96,7 @@ class InputMode(Mode):
             self.display_labels['left_action'].text = left_text
         if 'right_action' in self.display_labels:
             self.display_labels['right_action'].text = right_text
+
+    def handle_long_press(self):
+        """長押しでユーティリティモードに切り替え"""
+        return "Utility"

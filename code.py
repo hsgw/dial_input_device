@@ -131,8 +131,7 @@ while True:
         mode_manager.handle_double_click()
     
     elif switch_event == 'long_press':
-        # 長押しでユーティリティモードへ
-        print("Long press detected: Switching to Utility Mode")
-        mode_manager.set_mode("Utility", reset=True)
+        # 長押し
+        mode_manager.handle_long_press()
     
     time.sleep(0.01)  # CPU負荷を軽減

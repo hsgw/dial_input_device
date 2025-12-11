@@ -37,13 +37,15 @@ class JapaneseMode(InputMode):
         self.VOWELS = self.VOWELS + ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
         
         # 子音側: 記号
-        self.CONSONANTS = self.CONSONANTS + ['.', ',', '-', '/', '!', '?', '@', '_', ' ', '\n']
+        self.CONSONANTS = self.CONSONANTS + ['.', ',', '-', '/', '!', '?', '@', ' ', '\n']
         
     def on_enter(self, reset=False):
         """モードに入ったときの処理"""
         super().on_enter(reset=reset)
         # Utilityモード等から戻った時も、常にニュートラル状態で開始する
         self._set_active_state(is_neutral=True)
+        self.set_state('vowel_index', 0)
+        self.update_display_state()
     
     def init_state(self):
         """状態を初期化"""
@@ -200,16 +202,26 @@ class JapaneseMode(InputMode):
         # ニュートラル状態へ移行（サイドは維持）
         self._set_active_state(is_neutral=True)
         return None
-    
+
     def handle_double_click(self):
-        """ダブルクリック：エンターキー送信＆初期状態リセット"""
-        self.keyboard.send(Keycode.ENTER)
-        print("Sent: ENTER (Double Click)")
+        """クリック処理：現在の選択を入力してリセット"""
+        active_side = self.get_state('active_side')
         
-        # 完全リセット
-        self.set_state('consonant_index', 0)
-        self.set_state('vowel_index', 0)
-        self._set_active_state(is_neutral=True, active_side='vowel')
+        target_char = ""
+        if active_side == 'consonant':
+            target_char = self.CONSONANTS[self.get_state('consonant_index')]
+            # 子音をクリックで入力した場合、母音のindexをリセットする
+            self.set_state('vowel_index', 0)
+            
+        else:
+            target_char = self.VOWELS[self.get_state('vowel_index')]
         
+        if target_char:
+            self.send_key(target_char)
+            self.send_key(target_char)
+        
+        # ニュートラル状態へ移行（サイドは維持）
+        self._set_active_state(is_neutral=True)
         return None
+    
     
