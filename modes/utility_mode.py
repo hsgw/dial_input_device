@@ -61,8 +61,8 @@ class UtilityMode(Mode):
         labels['sp'] = label.Label(terminalio.FONT, text="SP", color=0xFFFFFF, scale=2, anchor_point=(1.0, 0.5), anchored_position=(DISPLAY_WIDTH - 10, DISPLAY_HEIGHT // 2))
         
         # Menu Mode Labels
-        labels['menu_title'] = label.Label(terminalio.FONT, text="< Menu >", color=0xFFFFFF, scale=2, anchor_point=(0.5, 0.0), anchored_position=(DISPLAY_WIDTH // 2, 5))
-        labels['menu_item'] = label.Label(terminalio.FONT, text="", color=0xFFFFFF, scale=3, anchor_point=(0.5, 0.5), anchored_position=(DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2 + 5))
+        labels['menu_title'] = label.Label(terminalio.FONT, text="< Menu >", color=0xFFFFFF, scale=1, anchor_point=(0.5, 0.0), anchored_position=(DISPLAY_WIDTH // 2, 5))
+        labels['menu_item'] = label.Label(terminalio.FONT, text="", color=0xFFFFFF, scale=1, anchor_point=(0.5, 0.5), anchored_position=(DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2 + 5))
 
         for l in labels.values():
             self.display_group.append(l)

@@ -28,8 +28,20 @@ class BasicMode(InputMode):
     def on_enter(self, reset=True):
         """モードに入ったときの処理"""
         super().on_enter(reset=reset)
-        self.update_footer_text("< Prev", "Next >")
+        # 回転方向をリセットし、フッターを初期状態に更新
+        self._set_rotation_direction(None)
 
+    def _set_rotation_direction(self, direction):
+        """回転方向を設定し、フッター表示を更新する"""
+        self.last_rotation_direction = direction
+        
+        if direction is None:
+            # ニュートラル状態
+            self.update_footer_text("< Prev", "Next >")
+        elif direction == 1: # 右回転中
+            self.update_footer_text("< Input", "Next >")
+        elif direction == -1: # 左回転中
+            self.update_footer_text("< Prev", "Input >")
 
     def update_display_state(self):
         """状態に基づいてディスプレイを更新"""
@@ -69,10 +81,8 @@ class BasicMode(InputMode):
                 print(f"Sent (Direction Change): '{selected_char}'")
             else:
                 print(f"Warning: No keycode mapping for '{selected_char}'")
-            
-            self.last_rotation_direction = current_rotation_direction
-        else:
-            self.last_rotation_direction = current_rotation_direction
+        
+        self._set_rotation_direction(current_rotation_direction)
         
         # 文字インデックスを更新
         char_index = (char_index + delta) % len(self.char_list)
@@ -87,8 +97,8 @@ class BasicMode(InputMode):
         
         if self.send_key(selected_char):
             print(f"Sent (Click): '{selected_char}'")
-            # 回転方向をリセット
-            self.last_rotation_direction = None
+            # 回転方向をリセットし、フッターを更新
+            self._set_rotation_direction(None)
         else:
             print(f"Warning: No keycode mapping for '{selected_char}'")
         
@@ -101,8 +111,8 @@ class BasicMode(InputMode):
         
         if self.send_key(selected_char, use_shift=True):
             print(f"Sent (Double Click): '{selected_char.upper() if selected_char.isalpha() else selected_char}'")
-            # 回転方向をリセット
-            self.last_rotation_direction = None
+            # 回転方向をリセットし、フッターを更新
+            self._set_rotation_direction(None)
         else:
             print(f"Warning: No keycode mapping for '{selected_char}'")
         
