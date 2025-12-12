@@ -4,9 +4,14 @@
 
 ロータリーエンコーダとスイッチを使った、ダイヤル錠をモチーフにしたユニークなキーボード入力デバイスです。
 
-このデバイスは[キーボード #1 Advent Calendar 2025](https://adventar.org/calendars/11674)の12日目の記事のために制作されました。
+このデバイスは[キーボード #1 Advent Calendar 2025](https://adventar.org/calendars/11674)の12日目の記事のために制作されました。  
+記事はこちら。 https://5z6p.com/articles/advent2025/
 
 ## 特徴
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PPbtNw3mayA?si=dgOxZzddUUwzIJG5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/pvNv5gb49p4?si=48qaEdz4w-IOEUIk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ロータリーエンコーダを左右に回して文字を入力するデバイスです。  
 USBキーボードとして動作します。
