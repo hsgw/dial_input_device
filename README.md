@@ -1,4 +1,6 @@
-# DIAL key-input device
+# DIAL input device
+
+![DIAL Input Device](dial_input_device.jpg)
 
 ロータリーエンコーダとスイッチを使った、ダイヤル錠をモチーフにしたユニークなキーボード入力デバイスです。
 
@@ -13,11 +15,13 @@ US/JISのキーコードに対応しています。
 ## ハードウェア要件
 
 - Seeed Studio XIAO RP2040
-- ロータリーエンコーダ (KY-040など)
-- タクトスイッチ
+- ロータリーエンコーダ
+- タクトスイッチ(ロータリーエンコーダに押し込みスイッチがない場合)
 - I2C OLEDディスプレイ (SH1106, 128x64)
 
 ## 配線
+
+[回路図](dial_input_device_schematic.pdf)
 
 ### ロータリーエンコーダ
 
@@ -44,23 +48,6 @@ CircuitPythonの`lib`フォルダに以下をコピー:
 
 - `adafruit_displayio_ssd1306.mpy`
 - `adafruit_display_text` (フォルダ)
-- `adafruit_bus_device` (フォルダ)
-- `adafruit_hid` (フォルダ)
-
-## ファイル構成
-
-```
-rotary_keyinput_device_rp2040/
-├── code.py              # メインプログラム
-├── config.py            # 設定ファイル（ピン配置、文字リストなど）
-├── keyboard_mapping.py  # キーボードマッピング（US/JIS）
-├── switch_handler.py    # スイッチ管理（ダブルクリック検出）
-├── mode_manager.py      # モード管理システム（基底クラス）
-├── modes/               # モードパッケージ
-│   ├── __init__.py     # パッケージ初期化
-│   └── basic_mode.py   # 基本入力モード（金庫ダイヤル風）
-└── README.md           # このファイル
-```
 
 ## 使い方
 
@@ -108,5 +95,11 @@ SWITCH_PIN = board.D7
 
 ## ライセンス
 
-MIT License
+MIT License  
 (c) 2025 Takuya Urakawa (@hsgw 5z6p.com)
+
+## ciurcuitpython/lib内のライセンス
+
+これらはAdafruit CircuitPythonライブラリであり、MITライセンスの下で提供されています。
+
+Copyright (c) 2016 Adafruit Industries
